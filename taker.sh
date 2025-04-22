@@ -80,6 +80,14 @@ function setup_Taker() {
         echo "screen 已安装，继续执行..."
     fi
 
+    # 安装项目依赖
+    echo "安装项目依赖..."
+    npm install
+    if [ \$? -ne 0 ]; then
+        echo "错误：npm install 失败，请检查网络或包配置。"
+        exit 1
+    fi
+
     # 创建或清空 wallets.json 文件
     echo "[]" > wallets.json
 
