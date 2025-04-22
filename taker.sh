@@ -20,6 +20,19 @@ function setup_Taker() {
         echo "Taker 目录已删除。"
     fi
 
+    # 检查 taker24 会话
+    if screen -list | grep -q "taker24"; then
+        echo "检测到 taker24 screen 会话，正在清理..."
+        screen -S taker24 -X quit
+        if [ $? -eq 0 ]; then
+            echo "taker24 screen 会话已成功清理。"
+        else
+            echo "错误：无法清理 taker24 screen 会话，请手动检查。"
+        fi
+    else
+        echo "未检测到 taker24 screen 会话。"
+    fi
+
     echo "正在从 GitHub 克隆 Taker 仓库..."
     git clone https://github.com/sdohuajia/Taker.git
     if [ ! -d "Taker" ]; then
@@ -206,6 +219,19 @@ function setup_sowingTaker() {
         echo "Taker2 目录已删除。"
     fi
 
+    # 检查 sowingtaker 会话
+    if screen -list | grep -q "sowingtaker"; then
+        echo "检测到 sowingtaker screen 会话，正在清理..."
+        screen -S sowingtaker -X quit
+        if [ $? -eq 0 ]; then
+            echo "sowingtaker screen 会话已成功清理。"
+        else
+            echo "错误：无法清理 sowingtaker screen 会话，请手动检查。"
+        fi
+    else
+        echo "未检测到 sowingtaker screen 会话。"
+    fi
+
     echo "正在从 GitHub 克隆 Taker 仓库..."
     git clone https://github.com/sdohuajia/Taker2.git
     if [ ! -d "Taker2" ]; then
@@ -358,6 +384,14 @@ function setup_sowingTaker() {
             echo "错误：生成 proxy.txt 失败，请检查 /root/Taker2 目录的写入权限（尝试 chmod u+w /root/Taker2 或以 sudo 运行）"
             exit 1
         fi
+    fi
+
+    # 安装项目依赖
+    echo "安装项目依赖..."
+    npm install
+    if [ \$? -ne 0 ]; then
+        echo "错误：npm install 失败，请检查网络或包配置。"
+        exit 1
     fi
 
     echo "正在使用 screen 启动 npm start..."
