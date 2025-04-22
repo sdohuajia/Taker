@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
 import fs from 'fs';
-import { HttpsProxyAgent } from 'https-proxy-agent'; // Use HttpsProxyAgent
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import log from './utils/logger.js';
-import iniBapakBudi from './utils/banner.js';
 import ngopiBro from './utils/contract.js';
 
 function readWallets() {
@@ -25,7 +24,6 @@ function readProxies() {
       .map(line => line.trim())
       .filter(line => line.length > 0)
       .map(line => {
-        // 解析格式 http://username:password@host:port 或 socks5://username:password@host:port
         const regexWithAuth = /^(http|socks5):\/\/([^:]+):([^@]+)@([^:]+):(\d+)$/;
         const regexWithoutAuth = /^(http|socks5):\/\/([^:]+):(\d+)$/;
         let match = line.match(regexWithAuth);
@@ -70,7 +68,7 @@ const proxies = readProxies();
 
 function getNextProxy() {
   const proxy = proxies[currentProxyIndex];
-  currentProxyIndex = (currentProxyIndex + 1) % proxies.length; // 循环轮换
+  currentProxyIndex = (currentProxyIndex + 1) % proxies.length;
   return proxy;
 }
 
@@ -86,7 +84,7 @@ function createAxiosInstance() {
     const proxyUrl = proxy.auth
       ? `http://${proxy.auth.username}:${proxy.auth.password}@${proxy.host}:${proxy.port}`
       : `http://${proxy.host}:${proxy.port}`;
-    agent = new HttpsProxyAgent(proxyUrl); // Use HttpsProxyAgent
+    agent = new HttpsProxyAgent(proxyUrl);
   } else if (proxy.protocol === 'socks5') {
     const proxyOptions = {
       host: proxy.host,
@@ -343,7 +341,7 @@ const main = async () => {
     }
 
     log.info('所有钱包处理完成，冷却 1 小时后再次检查...');
-    await sleep(60 * 60); // 1 小时延迟
+    await sleep(60 * 60);
   }
 };
 
